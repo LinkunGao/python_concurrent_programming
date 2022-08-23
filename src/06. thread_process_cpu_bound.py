@@ -1,0 +1,48 @@
+import math
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+import time
+
+PRIMES = [112272535095293] * 100
+
+def is_prime(n):
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    sqrt_n = int(math.floor(math.sqrt(n)))
+    for i in range(3, sqrt_n + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+# 单线程
+def single_thread():
+    for num in PRIMES:
+        is_prime(num)
+
+# 多线程
+def multi_thread():
+    with ThreadPoolExecutor() as pool:
+        pool.map(is_prime,PRIMES)
+
+def multi_process():
+    with ProcessPoolExecutor() as pool:
+        pool.map(is_prime,PRIMES)
+
+if __name__ == '__main__':
+    start = time.time()
+    single_thread()
+    end = time.time()
+    print("sigle time", end-start)
+
+    start = time.time()
+    multi_thread()
+    end = time.time()
+    print("multiple thread time", end - start)
+
+    start = time.time()
+    multi_process()
+    end = time.time()
+    print("multi process time", end - start)
